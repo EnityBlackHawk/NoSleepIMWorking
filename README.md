@@ -1,40 +1,103 @@
 # NoSleepIMWorking
 
-Win32 tray application that changes the laptop lid-close action depending on whether an external monitor is active.
+**Automatically prevent your Windows laptop from going to sleep when the lid is closed and an external monitor is connected.**
 
-## Lid policy
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)
 
-External monitor present:
+If you use a laptop as a desktop computer with an external monitor, you've probably encountered this Windows behavior:
 
-- AC: Do Nothing
-- DC: Do Nothing
+> You close the laptop lid → Windows puts the laptop to sleep → your external monitor goes dark.
 
-No external monitor:
+Windows allows you to configure the lid action to **"Do nothing"**, but then the laptop also stays awake when you close the lid **without** an external monitor.
 
-- AC: Sleep
-- DC: Sleep
+**NoSleepIMWorking** solves this automatically.
 
-The project currently writes the active power scheme. It does not save and restore a user's previous custom lid settings.
+---
 
-## Build
+## 💻 Compatibility
 
-From a Visual Studio Developer PowerShell:
+- ✅ Windows 10
+- ✅ Windows 11
+- ✅ x64 systems
+
+The application uses native Windows APIs available on both Windows 10 and Windows 11.
+
+---
+
+## ✨ How it works
+
+NoSleepIMWorking runs quietly in the Windows system tray and continuously monitors your display configuration.
+
+It automatically changes the Windows lid-close action depending on whether an external display is connected:
+
+| Configuration                      | Lid action		|
+| ---------------------------------- | --------------	|
+| Laptop display only                | 💤 Sleep			|
+| Laptop + external monitor          | 🖥️ Do nothing	|
+| External monitor only (lid closed) | 🖥️ Do nothing	|
+| External monitor disconnected      | 💤 Sleep			|
+
+The application runs in the user's session rather than as a Windows service, allowing it to correctly access the Windows display configuration APIs.
+
+---
+
+## 📦 Installation
+
+### Option 1 — Download a release
+
+Go to the project's **Releases** page and download the latest version.
+
+Extract the executable and run:
+
+```text
+NoSleepIMWorking.exe
+```
+
+The application will appear in the Windows system tray.
+
+You can enable:
+
+> **Start with Windows**
+
+from the tray menu if you want it to run automatically after logging in.
+
+### Option 2 — Build from source
+
+Requirements:
+
+* Windows 10 or Windows 11
+* Visual Studio 2022 or newer
+* C++ Desktop Development workload
+* CMake
+* Windows SDK
+
+Clone the repository:
 
 ```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+git clone https://github.com/YOUR_USERNAME/NoSleepIMWorking.git
+cd NoSleepIMWorking
+```
+
+Configure:
+
+```powershell
+cmake -S . -B build
+```
+
+Build:
+
+```powershell
 cmake --build build --config Release
 ```
 
-Run:
+The executable will be generated in the build directory.
 
-```powershell
-.\build\Release\LaptopLidTray.exe
-```
+---
 
-No administrator privileges are required for the tray application itself.
+## ⚙️ Usage
 
-## Startup
+The application does not requires any configuration.
 
-Right-click the tray icon and enable **Start with Windows**. This writes the executable path to the current user's:
+Connect or disconnect an external monitor and NoSleepIMWorking will automatically update the lid behavior.
 
-`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
+---
